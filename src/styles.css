@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --color-bg: #f6f1e8;
+  --color-surface: #fffdf8;
+  --color-raised: #ece6db;
+  --color-fg: #1c1917;
+  --color-muted: #5c564e;
+  --color-subtle: #847c72;
+  --color-border: #d8d0c4;
+  --color-primary: #2f4458;
+  --color-primary-fg: #f6f1e8;
+  --color-accent: #3d5a73;
+  --color-danger: #8f2d2d;
+  --color-ok: #2f5d3a;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+@layer base {
+  html {
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(1200px 500px at 10% -10%, color-mix(in oklab, var(--color-primary) 8%, transparent), transparent 60%),
+      var(--color-bg);
+    color: var(--color-fg);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
