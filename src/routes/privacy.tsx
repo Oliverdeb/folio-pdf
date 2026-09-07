@@ -30,8 +30,15 @@ function Privacy() {
         </ol>
         <p className="mt-3 text-muted">
           There is no Windows service to install and no extra programme to run. Staff do not host a server on their
-          desks. If the firm wants a shared address, IT publishes this site like any other intranet page — the host
-          still never sees the documents.
+          desks. IT can publish Folio as a static folder on IIS or the intranet — HTML and scripts only. The host still
+          never sees the documents.
+        </p>
+
+        <h2 className="mt-10 font-display text-2xl">Static hosting</h2>
+        <p className="mt-3 text-muted">
+          Folio is a set of files. Build with <span className="font-medium text-fg">npm run build:static</span> and copy
+          the site folder onto IIS, nginx, or GitHub Pages. No Node, Python, or database. Deep links such as Password
+          protect still work because each tool is a page in that folder, with a fallback to the home page.
         </p>
 
         <h2 className="mt-10 font-display text-2xl">Passwords</h2>

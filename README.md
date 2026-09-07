@@ -2,7 +2,39 @@
 
 Private PDF tools that run in the browser. Combine, split, convert, compress, stamp, lock and unlock documents on this device — files are not uploaded.
 
-## Run it
+## Host as a static site (no Node to run)
+
+```bash
+npm install
+npm run build:static
+```
+
+That writes a `site/` folder: HTML, JavaScript, CSS, fonts, and samples. Copy that folder onto IIS, nginx, Apache, or GitHub Pages. There is **no server process**. The host only hands the page to the browser. PDFs never leave the PC that opened it.
+
+Do not double-click `index.html` on disk. Serve the folder over http(s).
+
+### IIS (Windows)
+
+1. Copy `site` to e.g. `C:\inetpub\wwwroot\folio`.
+2. Install the [IIS URL Rewrite](https://www.iis.net/downloads/microsoft/url-rewrite) module if it is not already there (`web.config` is included).
+3. Confirm `.mjs` is served as JavaScript (the included `web.config` does this).
+4. Open the site in Edge. Optional: **⋯ → Apps → Install this site as an app**.
+
+### nginx
+
+```nginx
+root /var/www/folio;
+index index.html;
+location / {
+  try_files $uri $uri/ /index.html;
+}
+```
+
+### GitHub Pages
+
+Upload the `site` folder (or point Pages at it). `404.html` is a copy of `index.html` so `/merge` and `/protect` still load.
+
+## Develop
 
 Needs [Node.js 22](https://nodejs.org/).
 
@@ -11,13 +43,6 @@ npm install
 npm run dev
 ```
 
-Then open [http://localhost:8080](http://localhost:8080) in Edge or Chrome.
-
-- `npm run build` — production build
+- `npm run build` — production app (for the hosted preview)
+- `npm run build:static` — files-only folder in `site/`
 - `npm run test:unit` — library tests (merge, split, lock/unlock, …)
-
-## On Windows
-
-Open Folio in Microsoft Edge. Optional: **⋯ → Apps → Install this site as an app** to pin it to the Start menu. There is no extra Windows service. PDFs stay on that PC.
-
-To host it for the firm, deploy the production build as a website (the host only serves the page; it never sees the documents).

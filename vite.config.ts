@@ -142,6 +142,23 @@ function authPopupPlugin(): Plugin {
   };
 }
 
+const STATIC_PAGES = [
+  "/",
+  "/merge",
+  "/split",
+  "/compress",
+  "/stamp",
+  "/rearrange",
+  "/images-to-pdf",
+  "/pdf-to-images",
+  "/word-to-pdf",
+  "/protect",
+  "/unlock",
+  "/privacy",
+].map((path) => ({ path }));
+
+const isStatic = process.env.FOLIO_STATIC === "1";
+
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
@@ -166,15 +183,22 @@ export default defineConfig(({ command, isPreview }) => ({
     // PWA head + ?install=1 tutorial page; runs before Start/Nitro.
     grokPwaPlugin(),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart(
+      isStatic
+        ? {
+            spa: { enabled: true },
+            pages: STATIC_PAGES,
+            prerender: { enabled: true, crawlLinks: true },
+          }
+        : undefined,
+    ),
     ...(command === "build" || isPreview
       ? [
           nitro({
-            preset: "vercel",
-            // Auto-registers server/middleware/* (the PWA install page +
-            // manifest + head-tag middleware). Nitro v3 defaults serverDir to
-            // false, so removing this silently unwires /?install=1 on deploys.
-            serverDir: "./server",
+            preset: isStatic ? "static" : "vercel",
+            // Static export has no Node server; skip Grok middleware that
+            // imports the install HTML as ?raw (Nitro static cannot load it).
+            serverDir: isStatic ? false : "./server",
           }),
         ]
       : []),
