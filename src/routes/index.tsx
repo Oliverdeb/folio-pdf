@@ -25,10 +25,10 @@ function Home() {
             Combine PDFs
           </Link>
           <Link
-            to="/privacy"
+            to="/outlook"
             className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium"
           >
-            How it stays private
+            Outlook add-in
           </Link>
         </div>
 

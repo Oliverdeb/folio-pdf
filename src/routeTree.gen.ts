@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CompressRouteImport } from './routes/compress'
 import { Route as ImagesToPdfRouteImport } from './routes/images-to-pdf'
 import { Route as MergeRouteImport } from './routes/merge'
+import { Route as OutlookRouteImport } from './routes/outlook'
 import { Route as PdfToImagesRouteImport } from './routes/pdf-to-images'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProtectRouteImport } from './routes/protect'
@@ -21,6 +22,7 @@ import { Route as SplitRouteImport } from './routes/split'
 import { Route as StampRouteImport } from './routes/stamp'
 import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as WordToPdfRouteImport } from './routes/word-to-pdf'
+import { Route as OutlookPaneRouteImport } from './routes/outlook_.pane'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +42,11 @@ const ImagesToPdfRoute = ImagesToPdfRouteImport.update({
 const MergeRoute = MergeRouteImport.update({
   id: '/merge',
   path: '/merge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutlookRoute = OutlookRouteImport.update({
+  id: '/outlook',
+  path: '/outlook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PdfToImagesRoute = PdfToImagesRouteImport.update({
@@ -82,12 +89,18 @@ const WordToPdfRoute = WordToPdfRouteImport.update({
   path: '/word-to-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OutlookPaneRoute = OutlookPaneRouteImport.update({
+  id: '/outlook_/pane',
+  path: '/outlook/pane',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/compress': typeof CompressRoute
   '/images-to-pdf': typeof ImagesToPdfRoute
   '/merge': typeof MergeRoute
+  '/outlook': typeof OutlookRoute
   '/pdf-to-images': typeof PdfToImagesRoute
   '/privacy': typeof PrivacyRoute
   '/protect': typeof ProtectRoute
@@ -96,12 +109,14 @@ export interface FileRoutesByFullPath {
   '/stamp': typeof StampRoute
   '/unlock': typeof UnlockRoute
   '/word-to-pdf': typeof WordToPdfRoute
+  '/outlook/pane': typeof OutlookPaneRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compress': typeof CompressRoute
   '/images-to-pdf': typeof ImagesToPdfRoute
   '/merge': typeof MergeRoute
+  '/outlook': typeof OutlookRoute
   '/pdf-to-images': typeof PdfToImagesRoute
   '/privacy': typeof PrivacyRoute
   '/protect': typeof ProtectRoute
@@ -110,6 +125,7 @@ export interface FileRoutesByTo {
   '/stamp': typeof StampRoute
   '/unlock': typeof UnlockRoute
   '/word-to-pdf': typeof WordToPdfRoute
+  '/outlook/pane': typeof OutlookPaneRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -117,6 +133,7 @@ export interface FileRoutesById {
   '/compress': typeof CompressRoute
   '/images-to-pdf': typeof ImagesToPdfRoute
   '/merge': typeof MergeRoute
+  '/outlook': typeof OutlookRoute
   '/pdf-to-images': typeof PdfToImagesRoute
   '/privacy': typeof PrivacyRoute
   '/protect': typeof ProtectRoute
@@ -125,6 +142,7 @@ export interface FileRoutesById {
   '/stamp': typeof StampRoute
   '/unlock': typeof UnlockRoute
   '/word-to-pdf': typeof WordToPdfRoute
+  '/outlook_/pane': typeof OutlookPaneRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -133,6 +151,7 @@ export interface FileRouteTypes {
     | '/compress'
     | '/images-to-pdf'
     | '/merge'
+    | '/outlook'
     | '/pdf-to-images'
     | '/privacy'
     | '/protect'
@@ -141,12 +160,14 @@ export interface FileRouteTypes {
     | '/stamp'
     | '/unlock'
     | '/word-to-pdf'
+    | '/outlook/pane'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/compress'
     | '/images-to-pdf'
     | '/merge'
+    | '/outlook'
     | '/pdf-to-images'
     | '/privacy'
     | '/protect'
@@ -155,12 +176,14 @@ export interface FileRouteTypes {
     | '/stamp'
     | '/unlock'
     | '/word-to-pdf'
+    | '/outlook/pane'
   id:
     | '__root__'
     | '/'
     | '/compress'
     | '/images-to-pdf'
     | '/merge'
+    | '/outlook'
     | '/pdf-to-images'
     | '/privacy'
     | '/protect'
@@ -169,6 +192,7 @@ export interface FileRouteTypes {
     | '/stamp'
     | '/unlock'
     | '/word-to-pdf'
+    | '/outlook_/pane'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -176,6 +200,7 @@ export interface RootRouteChildren {
   CompressRoute: typeof CompressRoute
   ImagesToPdfRoute: typeof ImagesToPdfRoute
   MergeRoute: typeof MergeRoute
+  OutlookRoute: typeof OutlookRoute
   PdfToImagesRoute: typeof PdfToImagesRoute
   PrivacyRoute: typeof PrivacyRoute
   ProtectRoute: typeof ProtectRoute
@@ -184,6 +209,7 @@ export interface RootRouteChildren {
   StampRoute: typeof StampRoute
   UnlockRoute: typeof UnlockRoute
   WordToPdfRoute: typeof WordToPdfRoute
+  OutlookPaneRoute: typeof OutlookPaneRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -214,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/merge'
       fullPath: '/merge'
       preLoaderRoute: typeof MergeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outlook': {
+      id: '/outlook'
+      path: '/outlook'
+      fullPath: '/outlook'
+      preLoaderRoute: typeof OutlookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pdf-to-images': {
@@ -272,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WordToPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/outlook_/pane': {
+      id: '/outlook_/pane'
+      path: '/outlook/pane'
+      fullPath: '/outlook/pane'
+      preLoaderRoute: typeof OutlookPaneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -280,6 +320,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompressRoute: CompressRoute,
   ImagesToPdfRoute: ImagesToPdfRoute,
   MergeRoute: MergeRoute,
+  OutlookRoute: OutlookRoute,
   PdfToImagesRoute: PdfToImagesRoute,
   PrivacyRoute: PrivacyRoute,
   ProtectRoute: ProtectRoute,
@@ -288,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   StampRoute: StampRoute,
   UnlockRoute: UnlockRoute,
   WordToPdfRoute: WordToPdfRoute,
+  OutlookPaneRoute: OutlookPaneRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

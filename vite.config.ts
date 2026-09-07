@@ -155,6 +155,8 @@ const STATIC_PAGES = [
   "/protect",
   "/unlock",
   "/privacy",
+  "/outlook",
+  "/outlook/pane",
 ].map((path) => ({ path }));
 
 const isStatic = process.env.FOLIO_STATIC === "1";

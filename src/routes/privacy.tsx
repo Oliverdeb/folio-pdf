@@ -41,11 +41,22 @@ function Privacy() {
           protect still work because each tool is a page in that folder, with a fallback to the home page.
         </p>
 
+        <h2 className="mt-10 font-display text-2xl">Outlook for Windows</h2>
+        <p className="mt-3 text-muted">
+          The Outlook add-in asks when you attach an unlocked PDF. If you lock it, encryption happens on that PC
+          before the file is on the message. Folio does not receive the document or the password.{" "}
+          <Link to="/outlook" className="text-primary underline-offset-2 hover:underline">
+            Install the add-in
+          </Link>
+          .
+        </p>
+
         <h2 className="mt-10 font-display text-2xl">Passwords</h2>
         <p className="mt-3 text-muted">
           Protect uses AES-256 in this tab. Unlock needs the existing password. Wrong passwords are rejected here; they
           are not tried against a remote service.
         </p>
+
 
         <p className="mt-10">
           <Link to="/" className="text-primary underline-offset-2 hover:underline">

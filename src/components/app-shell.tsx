@@ -13,6 +13,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="font-display text-xl tracking-tight">Folio</span>
           </Link>
           <nav className="hidden items-center gap-4 text-sm text-muted md:flex">
+            <Link to="/outlook" className="hover:text-fg">
+              Outlook add-in
+            </Link>
             <Link to="/privacy" className="hover:text-fg">
               How it stays private
             </Link>
@@ -29,6 +32,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {t.title}
               </Link>
             ))}
+            <Link to="/outlook" className="hover:text-fg">
+              Outlook
+            </Link>
             <Link to="/privacy" className="hover:text-fg">
               Privacy
             </Link>

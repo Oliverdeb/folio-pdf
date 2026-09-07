@@ -34,6 +34,19 @@ location / {
 
 Upload the `site` folder (or point Pages at it). `404.html` is a copy of `index.html` so `/merge` and `/protect` still load.
 
+## Outlook for Windows
+
+Folio includes an Outlook add-in that asks when you attach an unlocked PDF, then can lock it on that PC (AES-256).
+
+1. Publish Folio (the `site` folder) on IIS or the intranet.
+2. Open Folio → **Outlook add-in** → **Download Outlook add-in**.
+3. In Outlook for Windows: **Home → Get Add-ins → My add-ins → Add a custom add-in → Add from file**.
+4. Restart Outlook. Compose a mail, attach an unlocked PDF, and choose whether to lock it.
+
+The ribbon button **Lock PDFs** opens the same pane. Send is checked again if a PDF is still unlocked.
+
+The add-in file (`folio-outlook.xml`) points at the same address as the Folio site. For a whole firm, deploy that XML from Microsoft 365 admin.
+
 ## Develop
 
 Needs [Node.js 22](https://nodejs.org/).
