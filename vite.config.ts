@@ -186,6 +186,40 @@ function skipStaticNitroBundle(): Plugin {
   };
 }
 
+/**
+ * TanStack Start hydrates with process.env.TSS_ROUTER_BASEPATH (empty when we
+ * prerender at `/`). That wipes createRouter({ basepath }) and the GitHub Pages
+ * URL /folio-pdf/ then matches no route (flash of HTML, then Not Found).
+ */
+function folioClientRouterBase(): Plugin {
+  return {
+    name: "folio-client-router-base",
+    apply: "build",
+    config() {
+      if (!isStatic || !folioBasepath) return;
+      return {
+        environments: {
+          client: {
+            define: {
+              "process.env.TSS_ROUTER_BASEPATH": JSON.stringify(folioBasepath),
+              "import.meta.env.TSS_ROUTER_BASEPATH": JSON.stringify(folioBasepath),
+            },
+          },
+        },
+      };
+    },
+    renderChunk(code) {
+      if (!isStatic || !folioBasepath) return;
+      if (!code.includes("serializationAdapters") || !code.includes("basepath:")) return;
+      const next = code.replace(
+        /update\(\{basepath:(?:""|``|'')(,serializationAdapters:)/g,
+        `update({basepath:(globalThis.__FOLIO_BASE||${JSON.stringify(folioBasepath)})$1`,
+      );
+      if (next !== code) return { code: next, map: null };
+    },
+  };
+}
+
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
@@ -225,6 +259,7 @@ export default defineConfig(({ command, isPreview }) => ({
           ? { router: { basepath: folioBasepath } }
           : undefined,
     ),
+    folioClientRouterBase(),
     ...(command === "build" || isPreview
       ? [
           nitro({
