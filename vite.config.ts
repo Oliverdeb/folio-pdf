@@ -157,18 +157,42 @@ const STATIC_PAGES = [
   "/privacy",
   "/outlook",
   "/outlook/pane",
-].map((path) => ({ path }));
+];
 
 const isStatic = process.env.FOLIO_STATIC === "1";
 const folioBaseRaw = process.env.FOLIO_BASE || "/";
 const folioBase = folioBaseRaw.endsWith("/") ? folioBaseRaw : `${folioBaseRaw}/`;
 const folioBasepath = folioBase === "/" ? undefined : folioBase.replace(/\/$/, "");
 
+/** Nitro static has no server entry; Vite then tries to SSR-bundle index.html and throws. */
+function skipStaticNitroBundle(): Plugin {
+  return {
+    name: "folio-skip-static-nitro-bundle",
+    apply: "build",
+    sharedDuringBuild: true,
+    buildApp: {
+      order: "pre",
+      handler(builder) {
+        if (!isStatic) return;
+        const orig = builder.build.bind(builder);
+        builder.build = async (env) => {
+          if (env?.name === "nitro") {
+            return { output: [] } as never;
+          }
+          return orig(env);
+        };
+      },
+    },
+  };
+}
+
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
 export default defineConfig(({ command, isPreview }) => ({
-  base: folioBase,
+  // Static prerender must be at `/`. GitHub Pages project path is applied
+  // afterwards in scripts/build-static.mjs (FOLIO_BASE).
+  base: isStatic ? "/" : folioBase,
   server: {
     host: "0.0.0.0",
     port: 8080,
@@ -189,19 +213,17 @@ export default defineConfig(({ command, isPreview }) => ({
     // PWA head + ?install=1 tutorial page; runs before Start/Nitro.
     grokPwaPlugin(),
     tailwindcss(),
+    skipStaticNitroBundle(),
     tanstackStart(
-      isStatic || folioBasepath
+      isStatic
         ? {
-            ...(isStatic
-              ? {
-                  spa: { enabled: true },
-                  pages: STATIC_PAGES,
-                  prerender: { enabled: true, crawlLinks: true },
-                }
-              : {}),
-            ...(folioBasepath ? { router: { basepath: folioBasepath } } : {}),
+            spa: { enabled: true },
+            pages: STATIC_PAGES.map((path) => ({ path })),
+            prerender: { enabled: true, crawlLinks: true },
           }
-        : undefined,
+        : folioBasepath
+          ? { router: { basepath: folioBasepath } }
+          : undefined,
     ),
     ...(command === "build" || isPreview
       ? [

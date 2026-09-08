@@ -1,8 +1,16 @@
+function runtimeBase(): string {
+  const env = (import.meta.env?.BASE_URL as string | undefined) || "/";
+  if (env && env !== "/") return env.replace(/\/$/, "");
+  if (typeof document !== "undefined") {
+    const tagged = document.querySelector('meta[name="folio-base"]')?.getAttribute("content");
+    if (tagged && tagged !== "/") return tagged.replace(/\/$/, "");
+  }
+  return "";
+}
+
 /** Vite `base` without a trailing slash. Empty when the app is at the site root. */
 export function publicBase(): string {
-  const raw = (import.meta.env?.BASE_URL as string | undefined) || "/";
-  if (raw === "/") return "";
-  return raw.endsWith("/") ? raw.slice(0, -1) : raw;
+  return runtimeBase();
 }
 
 export function publicUrl(path: string): string {
