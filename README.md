@@ -18,6 +18,10 @@ Private PDF tools that run in the browser. Combine, split, convert, compress, st
 
 Nothing in that list is sent to a server. The host only serves the page.
 
+Live site: **https://oliverdeb.github.io/folio-pdf/**
+
+Usage (which PDF tools people finish): **https://folio-pdf.goatcounter.com**
+
 ---
 
 ## 1. Put Folio on a website
@@ -55,6 +59,8 @@ location / {
 The repo must be **public** on GitHub’s free plan. The live URL will be:
 
 **https://oliverdeb.github.io/folio-pdf/**
+
+Usage stats: **https://folio-pdf.goatcounter.com**
 
 1. On GitHub: **Settings → General → Danger zone → Change visibility → Public**.
 2. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
