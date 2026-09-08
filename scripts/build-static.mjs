@@ -70,18 +70,22 @@ if (folioBase) console.log("URLs prefixed with", folioBase);
 console.log("Copy that folder onto IIS, nginx, or GitHub Pages. No server to run.");
 
 function applyProjectBase(dir, base) {
-  const meta = `<meta name="folio-base" content="${base}">`;
+  const inject = `<meta name="folio-base" content="${base}"><script>window.__FOLIO_BASE=${JSON.stringify(base)};</script>`;
   for (const file of listFiles(dir)) {
-    const ext = extname(file);
-    if (![".html", ".js", ".css", ".webmanifest"].includes(ext)) continue;
+    if (extname(file) !== ".html") continue;
     let text = readFileSync(file, "utf8");
     const original = text;
-    if (ext === ".html") {
-      if (!text.includes('name="folio-base"')) {
-        text = text.replace(/<head[^>]*>/i, (m) => `${m}${meta}`);
-      }
-      text = text.replace(/(href|src)=(["'])\/(?!\/)/g, `$1=$2${base}/`);
+    if (!text.includes('name="folio-base"')) {
+      text = text.replace(/<head[^>]*>/i, (m) => `${m}${inject}`);
+    } else if (!text.includes("__FOLIO_BASE")) {
+      text = text.replace(
+        /<meta name="folio-base"[^>]*>/,
+        (m) => `${m}<script>window.__FOLIO_BASE=${JSON.stringify(base)};</script>`,
+      );
     }
+    text = text.replace(/(href|src)=(["'])\/(?!\/)/g, `$1=$2${base}/`);
+    text = text.replaceAll('"/assets/', `"${base}/assets/`);
+    text = text.replaceAll("'/assets/", `'${base}/assets/`);
     if (text !== original) writeFileSync(file, text);
   }
 }
