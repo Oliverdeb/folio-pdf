@@ -69,19 +69,13 @@ Download the Outlook add-in from **this** Pages URL (not from a copy of the repo
 
 ### Usage stats (which PDF tools people use)
 
-GitHub Pages does not include analytics. Folio can send **page path + “download happened”** to [GoatCounter](https://www.goatcounter.com) (free, no cookies, no files).
+Folio sends **one count per finished job** (when you download a result, or lock a PDF in Outlook) to [GoatCounter](https://folio-pdf.goatcounter.com). No cookies. No files. No passwords.
 
-1. Create a site at [goatcounter.com](https://www.goatcounter.com) (pick a code, e.g. `oliverdeb-folio`).
-2. Repo → **Settings → Secrets and variables → Actions → Variables → New repository variable**
+Dashboard: **https://folio-pdf.goatcounter.com**
 
-| Name | Value |
-| --- | --- |
-| `GOATCOUNTER_SITE` | that code (e.g. `oliverdeb-folio`) |
+You will see `protect`, `merge`, `split`, … — not a second hit for merely opening the page.
 
-3. **Actions → GitHub Pages → Run workflow**.
-4. Open **`https://YOURCODE.goatcounter.com`** — that is the dashboard.
-
-You will see `/protect`, `/merge`, … for visits, and `/done/protect`, `/done/merge`, … when someone actually downloads a result. Nothing about the PDF itself is sent.
+To use a different GoatCounter site, set repo variable `GOATCOUNTER_SITE` and re-run the Pages workflow.
 
 ### Custom domain
 

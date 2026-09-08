@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { BusyBar } from "@/components/busy-bar";
 import { FolioMark } from "@/components/folio-mark";
 import { protectPdf } from "@/lib/pdf-password";
+import { trackPdfDone } from "@/lib/metrics";
 import type { OutlookAttachment, OutlookHost } from "@/lib/outlook-host";
 
 export function OutlookLockForm({
@@ -38,6 +39,7 @@ export function OutlookLockForm({
         await host.replaceAttachment(file.id, file.name, out);
         locked.push(file.name);
       }
+      trackPdfDone("/outlook");
       onDone(locked);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not lock that file.");

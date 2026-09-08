@@ -1,4 +1,4 @@
-/** Privacy-friendly counts: which tool page, and whether a PDF was downloaded. Never files or passwords. */
+/** One count per finished PDF job. Never files or passwords. */
 
 export type GoatCount = {
   count: (opts?: { path?: string; title?: string; event?: boolean }) => void;
@@ -11,6 +11,20 @@ declare global {
     __FOLIO_GOATCOUNTER?: string;
   }
 }
+
+const TOOL_EVENTS: Record<string, string> = {
+  merge: "Combine PDFs",
+  split: "Split / extract",
+  compress: "Compress",
+  stamp: "Stamp & Bates",
+  rearrange: "Rearrange",
+  "images-to-pdf": "Photos to PDF",
+  "pdf-to-images": "PDF to images",
+  "word-to-pdf": "Word to PDF",
+  protect: "Password protect",
+  unlock: "Remove password",
+  outlook: "Outlook protect",
+};
 
 export function goatSite(): string {
   const fromWindow =
@@ -37,34 +51,25 @@ export function metricsEnabled(): boolean {
   return Boolean(goatSite());
 }
 
-function toolPath(pathname: string): string {
+export function toolEventFromPath(pathname: string): { path: string; title: string } | null {
   const trimmed = pathname.replace(/\/$/, "") || "/";
-  const base = goatSite() && typeof document !== "undefined"
-    ? document.querySelector('meta[name="folio-base"]')?.getAttribute("content") || ""
-    : "";
-  const prefix = (base || "").replace(/\/$/, "");
-  if (prefix && (trimmed === prefix || trimmed.startsWith(prefix + "/"))) {
-    return trimmed.slice(prefix.length) || "/";
-  }
-  return trimmed;
+  const parts = trimmed.split("/").filter(Boolean);
+  let slug = parts[parts.length - 1] || "";
+  if (slug === "pane" && parts.includes("outlook")) slug = "outlook";
+  if (slug === "folio-pdf") return null;
+  const title = TOOL_EVENTS[slug];
+  if (!title) return null;
+  return { path: slug, title };
 }
 
-export function trackPage(pathname: string): void {
-  const site = goatSite();
-  if (!site) return;
-  fire(site, { path: toolPath(pathname), title: typeof document !== "undefined" ? document.title : "Folio" });
-}
-
-/** Fired when a processed PDF (or zip) is offered as a download. */
+/** Fired once when a processed PDF (or zip) is offered as a download. */
 export function trackPdfDone(pathname?: string): void {
   const site = goatSite();
   if (!site) return;
-  const path = typeof location !== "undefined" ? location.pathname : pathname || "/";
-  fire(site, {
-    path: `/done${toolPath(path)}`,
-    title: "PDF finished",
-    event: true,
-  });
+  const href = pathname || (typeof location !== "undefined" ? location.pathname : "");
+  const event = toolEventFromPath(href);
+  if (!event) return;
+  fire(site, { ...event, event: true });
 }
 
 function fire(site: string, opts: { path: string; title: string; event?: boolean }): void {

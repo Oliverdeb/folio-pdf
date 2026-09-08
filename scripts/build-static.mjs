@@ -100,7 +100,7 @@ function applyProjectBase(dir, base) {
 }
 
 function injectGoat(dir) {
-  const raw = (process.env.GOATCOUNTER_SITE || process.env.VITE_GOATCOUNTER || "").trim().toLowerCase();
+  const raw = (process.env.GOATCOUNTER_SITE || process.env.VITE_GOATCOUNTER || "folio-pdf").trim().toLowerCase();
   const site = raw.replace(/[^a-z0-9-]/g, "");
   if (!site || !/^[a-z0-9][a-z0-9-]*$/.test(site) || site.length > 60) return;
   const snippet = `<script>window.__FOLIO_GOATCOUNTER=${JSON.stringify(site)};window.goatcounter={no_onload:true}</script><script data-goatcounter="https://${site}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>`;

@@ -29,8 +29,8 @@ jobs:
           # Apex/custom domain: set repo variable FOLIO_BASE to /
           # Project Pages (oliverdeb.github.io/folio-pdf): leave unset
           FOLIO_BASE: ${{ vars.FOLIO_BASE || format('/{0}/', github.event.repository.name) }}
-          VITE_GOATCOUNTER: ${{ vars.GOATCOUNTER_SITE }}
-          GOATCOUNTER_SITE: ${{ vars.GOATCOUNTER_SITE }}
+          VITE_GOATCOUNTER: ${{ vars.GOATCOUNTER_SITE || 'folio-pdf' }}
+          GOATCOUNTER_SITE: ${{ vars.GOATCOUNTER_SITE || 'folio-pdf' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
