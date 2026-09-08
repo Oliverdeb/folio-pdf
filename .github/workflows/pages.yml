@@ -26,7 +26,9 @@ jobs:
       - run: npm ci
       - run: npm run build:static
         env:
-          FOLIO_BASE: /${{ github.event.repository.name }}/
+          # Apex/custom domain: set repo variable FOLIO_BASE to /
+          # Project Pages (oliverdeb.github.io/folio-pdf): leave unset
+          FOLIO_BASE: ${{ vars.FOLIO_BASE || format('/{0}/', github.event.repository.name) }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

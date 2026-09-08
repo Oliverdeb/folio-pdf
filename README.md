@@ -63,9 +63,59 @@ The repo must be **public** on GitHub’s free plan. The live URL will be:
 
 `404.html` is a copy of the home page so `/protect` and `/outlook` still load. The workflow sets the app’s base path to `/folio-pdf/` so scripts and samples resolve.
 
-If you later attach a custom domain at the site root, set `FOLIO_BASE` to `/` in the workflow.
+If you later attach a custom domain at the site root, follow **Custom domain** below.
 
 Download the Outlook add-in from **this** Pages URL (not from a copy of the repo) so the XML points at GitHub Pages.
+
+### Custom domain
+
+A custom domain (for example `folio.yourfirm.com`) serves Folio at the **root** of that host, not under `/folio-pdf/`. Do this after Pages is already working.
+
+**1. DNS at your registrar**
+
+For a subdomain (`folio.yourfirm.com`):
+
+| Type | Name | Value |
+| --- | --- | --- |
+| CNAME | `folio` | `oliverdeb.github.io` |
+
+For an apex domain (`yourfirm.com`):
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| AAAA | `@` | `2606:50c0:8000::153` |
+| AAAA | `@` | `2606:50c0:8001::153` |
+| AAAA | `@` | `2606:50c0:8002::153` |
+| AAAA | `@` | `2606:50c0:8003::153` |
+
+Optional: CNAME `www` → `oliverdeb.github.io`, then set both `www` and the apex in GitHub.
+
+TTL 300–600 seconds is enough. Wait until `folio.yourfirm.com` resolves to GitHub before the next step.
+
+**2. Tell GitHub the name**
+
+Repo → **Settings → Pages → Custom domain** → enter `folio.yourfirm.com` → **Save**. Wait for DNS check. Tick **Enforce HTTPS** when it appears (can take up to an hour).
+
+**3. Rebuild Folio at `/`**
+
+Repo → **Settings → Secrets and variables → Actions → Variables → New repository variable**
+
+| Name | Value |
+| --- | --- |
+| `FOLIO_BASE` | `/` |
+
+Then **Actions → GitHub Pages → Run workflow**. When it is green, open `https://folio.yourfirm.com`. `/protect` and `/outlook` must load.
+
+**4. Outlook add-in**
+
+Open **Outlook add-in** on the **custom domain** and download the XML again. The old GitHub.io XML will still point at `oliverdeb.github.io/folio-pdf`.
+
+If the page is blank after switching domain, `FOLIO_BASE` is still `/folio-pdf/` — set the variable to `/` and re-run the workflow.
+
 
 
 ---
