@@ -160,11 +160,15 @@ const STATIC_PAGES = [
 ].map((path) => ({ path }));
 
 const isStatic = process.env.FOLIO_STATIC === "1";
+const folioBaseRaw = process.env.FOLIO_BASE || "/";
+const folioBase = folioBaseRaw.endsWith("/") ? folioBaseRaw : `${folioBaseRaw}/`;
+const folioBasepath = folioBase === "/" ? undefined : folioBase.replace(/\/$/, "");
 
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
 export default defineConfig(({ command, isPreview }) => ({
+  base: folioBase,
   server: {
     host: "0.0.0.0",
     port: 8080,
@@ -186,11 +190,16 @@ export default defineConfig(({ command, isPreview }) => ({
     grokPwaPlugin(),
     tailwindcss(),
     tanstackStart(
-      isStatic
+      isStatic || folioBasepath
         ? {
-            spa: { enabled: true },
-            pages: STATIC_PAGES,
-            prerender: { enabled: true, crawlLinks: true },
+            ...(isStatic
+              ? {
+                  spa: { enabled: true },
+                  pages: STATIC_PAGES,
+                  prerender: { enabled: true, crawlLinks: true },
+                }
+              : {}),
+            ...(folioBasepath ? { router: { basepath: folioBasepath } } : {}),
           }
         : undefined,
     ),

@@ -1,8 +1,10 @@
+import { publicUrl } from "./public-url.ts";
+
 export const SAMPLES = {
-  letter: "/samples/engagement-letter.pdf",
-  fees: "/samples/fee-schedule.pdf",
-  annexure: "/samples/annexure-a.pdf",
-  docx: "/samples/engagement-letter.docx",
+  letter: publicUrl("/samples/engagement-letter.pdf"),
+  fees: publicUrl("/samples/fee-schedule.pdf"),
+  annexure: publicUrl("/samples/annexure-a.pdf"),
+  docx: publicUrl("/samples/engagement-letter.docx"),
 } as const;
 
 export async function fetchSample(path: string): Promise<{ bytes: Uint8Array; name: string }> {

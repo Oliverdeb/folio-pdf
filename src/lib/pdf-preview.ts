@@ -1,10 +1,11 @@
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { publicUrl } from "./public-url.ts";
 
 let workerReady = false;
 
 function ensureWorker() {
   if (workerReady) return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+  GlobalWorkerOptions.workerSrc = publicUrl("/pdf.worker.min.mjs");
   workerReady = true;
 }
 

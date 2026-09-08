@@ -50,9 +50,23 @@ location / {
 }
 ```
 
-### GitHub Pages
+### GitHub Pages (free public site)
 
-Upload the `site` folder (or point Pages at it). `404.html` is a copy of `index.html` so `/merge` and `/protect` still load.
+The repo must be **public** on GitHub’s free plan. The live URL will be:
+
+**https://oliverdeb.github.io/folio-pdf/**
+
+1. On GitHub: **Settings → General → Danger zone → Change visibility → Public**.
+2. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Push (or wait for) the workflow in `.github/workflows/pages.yml`. **Actions** should show **GitHub Pages** in green.
+4. Open https://oliverdeb.github.io/folio-pdf/
+
+`404.html` is a copy of the home page so `/protect` and `/outlook` still load. The workflow sets the app’s base path to `/folio-pdf/` so scripts and samples resolve.
+
+If you later attach a custom domain at the site root, set `FOLIO_BASE` to `/` in the workflow.
+
+Download the Outlook add-in from **this** Pages URL (not from a copy of the repo) so the XML points at GitHub Pages.
+
 
 ---
 

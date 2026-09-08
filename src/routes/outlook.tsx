@@ -5,13 +5,14 @@ import { OutlookLockForm } from "@/components/outlook-lock-form";
 import { Button } from "@/components/ui/button";
 import { createMemoryHost, type OutlookAttachment } from "@/lib/outlook-host";
 import { outlookManifestXml } from "@/lib/outlook-manifest";
+import { siteRootFromWindow } from "@/lib/public-url";
 import { fetchSample, SAMPLES } from "@/lib/samples";
 import { Mail, Lock, Download } from "lucide-react";
 
 export const Route = createFileRoute("/outlook")({ component: OutlookPage });
 
 function downloadManifest() {
-  const xml = outlookManifestXml(window.location.origin);
+  const xml = outlookManifestXml(siteRootFromWindow());
   const blob = new Blob([xml], { type: "text/xml" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

@@ -1,7 +1,13 @@
 const ADDIN_ID = "8f3c1a2e-7b64-4d91-9e05-2a6b8c4d1f70";
 
 export function outlookManifestXml(baseUrl: string): string {
-  const origin = baseUrl.replace(/\/$/, "");
+  const root = baseUrl.replace(/\/$/, "");
+  let appDomain = root;
+  try {
+    appDomain = new URL(root).origin;
+  } catch {
+    /* keep root */
+  }
   return `<?xml version="1.0" encoding="UTF-8"?>
 <OfficeApp
   xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
@@ -15,11 +21,11 @@ export function outlookManifestXml(baseUrl: string): string {
   <DefaultLocale>en-GB</DefaultLocale>
   <DisplayName DefaultValue="Folio PDF lock"/>
   <Description DefaultValue="Asks whether to password-protect unlocked PDFs when you attach them in Outlook. Encryption runs on this PC."/>
-  <IconUrl DefaultValue="${origin}/outlook/icon-32.png"/>
-  <HighResolutionIconUrl DefaultValue="${origin}/outlook/icon-80.png"/>
-  <SupportUrl DefaultValue="${origin}/outlook"/>
+  <IconUrl DefaultValue="${root}/outlook/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="${root}/outlook/icon-80.png"/>
+  <SupportUrl DefaultValue="${root}/outlook"/>
   <AppDomains>
-    <AppDomain>${origin}</AppDomain>
+    <AppDomain>${appDomain}</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox"/>
@@ -32,13 +38,13 @@ export function outlookManifestXml(baseUrl: string): string {
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="${origin}/outlook/pane"/>
+        <SourceLocation DefaultValue="${root}/outlook/pane"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
     <Form xsi:type="ItemEdit">
       <DesktopSettings>
-        <SourceLocation DefaultValue="${origin}/outlook/pane"/>
+        <SourceLocation DefaultValue="${root}/outlook/pane"/>
         <RequestedHeight>420</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -122,14 +128,14 @@ export function outlookManifestXml(baseUrl: string): string {
       </Hosts>
       <Resources>
         <bt:Images>
-          <bt:Image id="Icon.16x16" DefaultValue="${origin}/outlook/icon-16.png"/>
-          <bt:Image id="Icon.32x32" DefaultValue="${origin}/outlook/icon-32.png"/>
-          <bt:Image id="Icon.80x80" DefaultValue="${origin}/outlook/icon-80.png"/>
+          <bt:Image id="Icon.16x16" DefaultValue="${root}/outlook/icon-16.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="${root}/outlook/icon-32.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="${root}/outlook/icon-80.png"/>
         </bt:Images>
         <bt:Urls>
-          <bt:Url id="Taskpane.Url" DefaultValue="${origin}/outlook/pane"/>
-          <bt:Url id="WebViewRuntime.Url" DefaultValue="${origin}/outlook/commands.html"/>
-          <bt:Url id="JSRuntime.Url" DefaultValue="${origin}/outlook/commands.js"/>
+          <bt:Url id="Taskpane.Url" DefaultValue="${root}/outlook/pane"/>
+          <bt:Url id="WebViewRuntime.Url" DefaultValue="${root}/outlook/commands.html"/>
+          <bt:Url id="JSRuntime.Url" DefaultValue="${root}/outlook/commands.js"/>
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="GroupLabel" DefaultValue="Folio"/>

@@ -58,6 +58,12 @@ test("manifest asks on attach and on send", () => {
   assert.match(xml, /ReadWriteItem/);
 });
 
+test("manifest keeps GitHub Pages project path", () => {
+  const xml = outlookManifestXml("https://oliverdeb.github.io/folio-pdf");
+  assert.match(xml, /https:\/\/oliverdeb\.github\.io\/folio-pdf\/outlook\/pane/);
+  assert.match(xml, /<AppDomain>https:\/\/oliverdeb\.github\.io<\/AppDomain>/);
+});
+
 test("event runtime associates attach and send handlers", async () => {
   const js = await readFile(join(process.cwd(), "public", "outlook", "commands.js"), "utf8");
   assert.match(js, /onMessageAttachmentsChangedHandler/);
