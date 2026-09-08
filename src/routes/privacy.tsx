@@ -51,6 +51,13 @@ function Privacy() {
           .
         </p>
 
+        <h2 className="mt-10 font-display text-2xl">Usage counts</h2>
+        <p className="mt-3 text-muted">
+          The public site can record which tool page was opened and whether a download happened (for example Protect vs
+          Combine). That is a page path only — not the document, not the password, not your name. A self-hosted copy
+          sends nothing unless you set a GoatCounter site code when you build.
+        </p>
+
         <h2 className="mt-10 font-display text-2xl">Passwords</h2>
         <p className="mt-3 text-muted">
           Protect uses AES-256 in this tab. Unlock needs the existing password. Wrong passwords are rejected here; they

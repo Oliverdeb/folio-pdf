@@ -57,6 +57,7 @@ if (!existsSync(join(site, "web.config"))) {
 const folioBase = (process.env.FOLIO_BASE || "/").replace(/\/$/, "");
 if (folioBase) applyProjectBase(site, folioBase);
 writeFolioManifest(site, folioBase || "");
+injectGoat(site);
 
 const routes = ["index.html", "merge/index.html", "protect/index.html", "outlook/index.html"];
 for (const route of routes) {
@@ -96,6 +97,21 @@ function applyProjectBase(dir, base) {
     }
     if (text !== original) writeFileSync(file, text);
   }
+}
+
+function injectGoat(dir) {
+  const raw = (process.env.GOATCOUNTER_SITE || process.env.VITE_GOATCOUNTER || "").trim().toLowerCase();
+  const site = raw.replace(/[^a-z0-9-]/g, "");
+  if (!site || !/^[a-z0-9][a-z0-9-]*$/.test(site) || site.length > 60) return;
+  const snippet = `<script>window.__FOLIO_GOATCOUNTER=${JSON.stringify(site)};window.goatcounter={no_onload:true}</script><script data-goatcounter="https://${site}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>`;
+  for (const file of listFiles(dir)) {
+    if (extname(file) !== ".html") continue;
+    let text = readFileSync(file, "utf8");
+    if (text.includes("__FOLIO_GOATCOUNTER")) continue;
+    const next = text.replace(/<head[^>]*>/i, (m) => `${m}${snippet}`);
+    if (next !== text) writeFileSync(file, next);
+  }
+  console.log("GoatCounter site", site);
 }
 
 function writeFolioManifest(dir, base) {

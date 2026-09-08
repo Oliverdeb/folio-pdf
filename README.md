@@ -67,6 +67,22 @@ If you later attach a custom domain at the site root, follow **Custom domain** b
 
 Download the Outlook add-in from **this** Pages URL (not from a copy of the repo) so the XML points at GitHub Pages.
 
+### Usage stats (which PDF tools people use)
+
+GitHub Pages does not include analytics. Folio can send **page path + “download happened”** to [GoatCounter](https://www.goatcounter.com) (free, no cookies, no files).
+
+1. Create a site at [goatcounter.com](https://www.goatcounter.com) (pick a code, e.g. `oliverdeb-folio`).
+2. Repo → **Settings → Secrets and variables → Actions → Variables → New repository variable**
+
+| Name | Value |
+| --- | --- |
+| `GOATCOUNTER_SITE` | that code (e.g. `oliverdeb-folio`) |
+
+3. **Actions → GitHub Pages → Run workflow**.
+4. Open **`https://YOURCODE.goatcounter.com`** — that is the dashboard.
+
+You will see `/protect`, `/merge`, … for visits, and `/done/protect`, `/done/merge`, … when someone actually downloads a result. Nothing about the PDF itself is sent.
+
 ### Custom domain
 
 A custom domain (for example `folio.yourfirm.com`) serves Folio at the **root** of that host, not under `/folio-pdf/`. Do this after Pages is already working.

@@ -1,3 +1,5 @@
+import { trackPdfDone } from "./metrics";
+
 export function downloadBytes(bytes: Uint8Array, filename: string, mime = "application/pdf") {
   const copy = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
   const blob = new Blob([copy as ArrayBuffer], { type: mime });
@@ -9,6 +11,7 @@ export function downloadBytes(bytes: Uint8Array, filename: string, mime = "appli
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1500);
+  trackPdfDone();
 }
 
 export async function fileToBytes(file: File): Promise<Uint8Array> {
