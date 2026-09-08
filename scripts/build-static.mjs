@@ -56,6 +56,7 @@ if (!existsSync(join(site, "web.config"))) {
 
 const folioBase = (process.env.FOLIO_BASE || "/").replace(/\/$/, "");
 if (folioBase) applyProjectBase(site, folioBase);
+writeFolioManifest(site, folioBase || "");
 
 const routes = ["index.html", "merge/index.html", "protect/index.html", "outlook/index.html"];
 for (const route of routes) {
@@ -72,22 +73,46 @@ console.log("Copy that folder onto IIS, nginx, or GitHub Pages. No server to run
 function applyProjectBase(dir, base) {
   const inject = `<meta name="folio-base" content="${base}"><script>window.__FOLIO_BASE=${JSON.stringify(base)};</script>`;
   for (const file of listFiles(dir)) {
-    if (extname(file) !== ".html") continue;
+    const ext = extname(file);
+    if (ext !== ".html" && ext !== ".css") continue;
     let text = readFileSync(file, "utf8");
     const original = text;
-    if (!text.includes('name="folio-base"')) {
-      text = text.replace(/<head[^>]*>/i, (m) => `${m}${inject}`);
-    } else if (!text.includes("__FOLIO_BASE")) {
-      text = text.replace(
-        /<meta name="folio-base"[^>]*>/,
-        (m) => `${m}<script>window.__FOLIO_BASE=${JSON.stringify(base)};</script>`,
-      );
+    if (ext === ".html") {
+      if (!text.includes('name="folio-base"')) {
+        text = text.replace(/<head[^>]*>/i, (m) => `${m}${inject}`);
+      } else if (!text.includes("__FOLIO_BASE")) {
+        text = text.replace(
+          /<meta name="folio-base"[^>]*>/,
+          (m) => `${m}<script>window.__FOLIO_BASE=${JSON.stringify(base)};</script>`,
+        );
+      }
+      text = text.replace(/(href|src)=(["'])\/(?!\/)/g, `$1=$2${base}/`);
+      text = text.replaceAll('"/assets/', `"${base}/assets/`);
+      text = text.replaceAll("'/assets/", `'${base}/assets/`);
+    } else {
+      text = text.replaceAll("url(/assets/", `url(${base}/assets/`);
+      text = text.replaceAll('url("/assets/', `url("${base}/assets/`);
+      text = text.replaceAll("url('/assets/", `url('${base}/assets/`);
     }
-    text = text.replace(/(href|src)=(["'])\/(?!\/)/g, `$1=$2${base}/`);
-    text = text.replaceAll('"/assets/', `"${base}/assets/`);
-    text = text.replaceAll("'/assets/", `'${base}/assets/`);
     if (text !== original) writeFileSync(file, text);
   }
+}
+
+function writeFolioManifest(dir, base) {
+  const grokDir = join(dir, "__grok");
+  mkdirSync(grokDir, { recursive: true });
+  const start = base ? `${base}/` : "/";
+  writeFileSync(
+    join(grokDir, "manifest.webmanifest"),
+    JSON.stringify({
+      name: "Folio",
+      short_name: "Folio",
+      start_url: start,
+      display: "standalone",
+      background_color: "#f4efe6",
+      theme_color: "#2F4458",
+    }),
+  );
 }
 
 function listFiles(dir, out = []) {
